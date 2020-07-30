@@ -1,12 +1,8 @@
 const express = require('express');
+const loansController = require('../controllers/loans');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-    res.status(200).json({
-        status: 'succeded',
-        message: 'Welcome to Homepage'
-    });
-})
+router.get('/', loansController.getHomepage);
 
 module.exports = router;
