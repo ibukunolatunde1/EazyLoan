@@ -1,2 +1,2 @@
 # EazyLoan
-A Loan application
+A Loan application written in NodeJS
