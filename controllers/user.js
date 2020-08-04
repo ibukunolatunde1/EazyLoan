@@ -3,12 +3,7 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 
 exports.postSignUp = (req, res, next) => {
-    const email = req.body.email;
-    const phoneNumber = req.body.phoneNumber;
-    const bvn = req.body.bvn;
-    const dob = req.body.dob;
-    const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
+    const { email, phoneNumber, bvn, dob, password, confirmPassword } = req.body;
     User.findOne({ email: email })
         .then(userDoc => {
             if(userDoc){
@@ -32,9 +27,8 @@ exports.postSignUp = (req, res, next) => {
 }
 
 exports.postSignIn = (req, res, next) => {
-    const phonenumber = req.body.phoneNumber;
-    const password = req.body.password;
-    User.findOne({ phonenumber: phonenumber})
+    const { phoneNumber, password } = req.body;
+    User.findOne({ phonenumber: phoneNumber})
         .then(user => {
             if(!user) {
                 return res.status(400).json({message: 'Invalid Phone or password'})
