@@ -4,22 +4,27 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
     title: {
-        type: String
+        type: String,
+        default: 'pending'
     },
     firstname: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     middlename: {
-        type: String
+        type: String,
+        default: 'pending'
     },
     lastname: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -39,46 +44,56 @@ const userSchema = new Schema({
     },
     gender: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     maritalstatus: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     officialemail: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     employername: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     employername: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     employername: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     salary: Number,
     salaryPaymentDate: String,
     homeaddress: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     LGA: String,
     stateofresidence: {
         type: String,
-        required: true
+        required: true,
+        default: 'pending'
     },
     bankcode: {
         type: Number,
-        required: true
+        required: true,
+        default: 'pending'
     },
     accountnumber: {
         type: Number,
-        required: true
+        required: true,
+        default: 'pending'
     },
     bvn: {
         type: String,
