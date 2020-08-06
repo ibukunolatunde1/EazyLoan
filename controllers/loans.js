@@ -37,8 +37,17 @@ exports.postCreateLoanApplication = (req, res, next) => {
     const MIN_TENOR = 1;
     const MAX_TENOR = 18;
     
+    //TODO: Authorize this page for a specific customer
+
+    //TODO: Confirm that the customer has the exact parameters
     if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
         return res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
     if(loanTenure < MIN_TENOR || loanTenure > MAX_TENOR)
         return res.status(400).json({ message: `Please select between ${MIN_FREQUENCY} and ${MAX_FREQUENCY} months.`});
+    
+    //TODO: Confirm that the customer has all his personal details set up
+
+    //TODO: Save loan to DB - if earlier operation succeeds
+
+    //TODO: Inform the customer that you are processing his request and will get back in an hour
 }
