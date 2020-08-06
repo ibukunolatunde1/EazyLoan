@@ -16,10 +16,6 @@ const loanSchema = new Schema({
         type: Number,
         required: true
     },
-    repaymentfrequency: {
-        type: String,
-        required: true
-    },
     lastrepaymentamount: {
         type: String,
         required: true
