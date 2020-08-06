@@ -16,12 +16,17 @@ exports.postSignUp = (req, res, next) => {
                         email: email,
                         password: hashedPassword,
                         phonenumber: phoneNumber,
-                        dob: dob,
+                        dob: new Date(dob),
                         bvn: bvn
                     });
                     return user.save();
                 })
-                .then(result => console.log(result));
+                .then(result => {
+                    res.status(200).json({
+                        message: 'Successful',
+                        data: result
+                    })
+                });
         })
         .catch(err => console.log(err));
 }
@@ -41,6 +46,16 @@ exports.postSignIn = (req, res, next) => {
                     return res.status(400).json({message: 'Invalid Phone or password'})
                 })
                 .catch(err => console.log(err))
+        })
+        .catch(err => console.log(err));
+}
+
+exports.getUser = (req, res, next) => {
+    const customerId = req.params.customerId;
+    User.findOne({customerId: customerId})
+        .then(result => {
+            console.log(result);
+            res.status(200).json({result: result})
         })
         .catch(err => console.log(err));
 }

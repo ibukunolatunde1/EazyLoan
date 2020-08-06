@@ -36,7 +36,8 @@ const userSchema = new Schema({
     },
     customerid: {
         type: String,
-        required: true
+        required: true,
+        default: 0
     },
     dob: {
         type: Date,
@@ -88,12 +89,12 @@ const userSchema = new Schema({
     bankcode: {
         type: Number,
         required: true,
-        default: 'pending'
+        default: 0
     },
     accountnumber: {
         type: Number,
         required: true,
-        default: 'pending'
+        default: 0
     },
     bvn: {
         type: String,

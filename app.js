@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const loanRoute = require('./routes/loans');
 const adminRoute = require('./routes/admin');
+const userRoute = require('./routes/user');
 const errorController = require('./controllers/error');
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/api', loanRoute);
 app.use('/admin', adminRoute);
+app.use('/user', userRoute);
 
 app.use(errorController.get404);
 
