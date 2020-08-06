@@ -27,3 +27,18 @@ exports.getLoan = (req, res, next) => {
             return next(error);
         });
 }
+
+exports.postCreateLoanApplication = (req, res, next) => {
+    const {loanAmount, loanTenure} = req.body;
+    const customerId = req.params.customerId;
+    // If none of them exist, then its not a valid loan application
+    const MIN_AMOUNT = 50000;
+    const MAX_AMOUNT = 2000000;
+    const MIN_TENOR = 1;
+    const MAX_TENOR = 18;
+    
+    if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
+        return res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
+    if(loanTenure < MIN_TENOR || loanTenure > MAX_TENOR)
+        return res.status(400).json({ message: `Please select between ${MIN_FREQUENCY} and ${MAX_FREQUENCY} months.`});
+}

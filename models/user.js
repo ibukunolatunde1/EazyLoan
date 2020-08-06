@@ -1,8 +1,16 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
 
 const Schema = mongoose.Schema;
+const connection = mongoose.createConnection(process.env.DB_URL);
+autoIncrement.initialize(connection);
 
 const userSchema = new Schema({
+    seqid: {
+        type: Number,
+        default: 0
+    },
     title: {
         type: String,
         default: 'pending'
@@ -102,4 +110,10 @@ const userSchema = new Schema({
     }
 });
 
+userSchema.plugin(autoIncrement.plugin, {
+    model: 'User',
+    field: 'seqid',
+    startAt: 1,
+    incrementBy: 1
+});
 module.exports = mongoose.model('User', userSchema);
