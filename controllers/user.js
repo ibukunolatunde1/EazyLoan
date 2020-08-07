@@ -1,8 +1,6 @@
 const User = require('../models/user');
 
 const bcrypt = require('bcryptjs');
-// const { update } = require('../models/user');
-// const user = require('../models/user');
 
 exports.postSignUp = (req, res, next) => {
     const { email, phoneNumber, bvn, dob, password, confirmPassword } = req.body;
