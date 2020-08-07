@@ -40,8 +40,9 @@ const userSchema = new Schema(
             required: true
         },
         phonenumber: {
-            type: String,
-            required: true
+            type: Number,
+            required: true,
+            unique: true
         },
         customerid: {
             type: String,
