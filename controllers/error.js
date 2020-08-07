@@ -1,6 +1,9 @@
-exports.get404 = (req, res, next) => {
-    res.status(404).json({
-        status: 404,
-        message: "Page not found"
+exports.get404 = (error, req, res, next) => {
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({
+        data,
+        message
     })
 }

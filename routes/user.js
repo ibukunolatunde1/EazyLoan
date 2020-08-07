@@ -25,15 +25,23 @@ router.post(
             .trim()
             .isLength({ min: 6 })
             .withMessage('Password must be at least 6 characters'),
-        body('confirmPassword')
-            .custom((value, {req}) => {
-                if(value !== req.body.password)
-                    throw new Error('Password confirmation is incorrect')
-            }),
+        // body('confirmPassword')
+        //     .custom((value, {req}) => {
+        //         if(value !== req.body.password)
+        //             throw new Error('Password confirmation is incorrect')
+        //     }),
         body('phoneNumber')
             .trim()
+            .isNumeric()
             .isLength({ min: 11, max: 11 })
-            .withMessage('Please enter a valid phone number'),
+            .withMessage('Please enter a valid phone number')
+            .custom((value, { req }) => {
+                return User.findOne({ phonenumber: value}).then(userDoc => {
+                    if(userDoc) {
+                        return Promise.reject('Phone number already in use!');
+                    }
+                });
+            }),
         body('bvn')
             .trim()
             .isNumeric()
