@@ -56,6 +56,14 @@ const loanSchema = new Schema(
         isActive: {
             type: Boolean,
             required: true
+        },
+        isApproved: {
+            type: String,
+            required: true
+        },
+        isAcceptedOffer: {
+            type: String,
+            required: true
         }
     },
     { timestamps: true }
