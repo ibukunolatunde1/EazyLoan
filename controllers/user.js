@@ -80,7 +80,7 @@ exports.postSignIn = (req, res, next) => {
 
 exports.getUser = (req, res, next) => {
     const customerId = req.params.customerId;
-    User.findOne({customerId: customerId})
+    User.findOne({customerid: customerId})
         .then(result => {
             res.status(200).json(result);
         })
@@ -90,4 +90,37 @@ exports.getUser = (req, res, next) => {
             }
             next(err);
         });
+}
+
+exports.updateUser = (req, res, next) => {
+    const customerId = req.customerId;
+    const { title, firstname, middlename, lastname, gender, maritalstatus, officialemail, employername, homeaddress, stateofresidence } = req.body;
+    User.findOne({ customerid: customerId})
+        .then(result => {
+            if(!result){
+                const error = new Error('Could not find user');
+                error.statusCode = 404;
+                throw error;
+            }
+            result.title = title;
+            result.firstname = firstname;
+            result.middlename = middlename;
+            result.lastname = lastname;
+            result.gender = gender;
+            result.maritalstatus = maritalstatus;
+            result.officialemail = officialemail;
+            result.employername = employername;
+            result.homeaddress = homeaddress;
+            result.stateofresidence = stateofresidence;
+            return result.save();
+        })
+        .then(result => {
+            res.status(200).json({ message: 'User updated!', result });
+        })
+        .catch(err => {
+            if(!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        })
 }
