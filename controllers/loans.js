@@ -1,4 +1,5 @@
 const Loan = require('../models/loan');
+const User = require('../models/user');
 
 exports.getHomepage = (req, res, next) => {
     res.status(200).json({
@@ -30,22 +31,48 @@ exports.getLoan = (req, res, next) => {
 
 exports.postCreateLoanApplication = (req, res, next) => {
     const {loanAmount, loanTenure} = req.body;
-    const customerId = req.params.customerId;
-    // If none of them exist, then its not a valid loan application
+    const customerId = req.customerId;
     const MIN_AMOUNT = 50000;
     const MAX_AMOUNT = 2000000;
-    const MIN_TENOR = 1;
-    const MAX_TENOR = 18;
-    
-    //TODO: Authorize this page for a specific customer
+    const MIN_TENURE = 1;
+    const MAX_TENURE = 18;
 
-    //TODO: Confirm that the customer has the exact parameters
-    if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
-        return res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
-    if(loanTenure < MIN_TENOR || loanTenure > MAX_TENOR)
-        return res.status(400).json({ message: `Please select between ${MIN_FREQUENCY} and ${MAX_FREQUENCY} months.`});
-    
     //TODO: Confirm that the customer has all his personal details set up
+    User.findOne({ customerid: customerId})
+        .then(result => {
+            if(!result) {
+                const error = new Error('Cannot find user');
+                error.httpStatusCode = 404;
+                throw error;
+            }
+            const { title, firstname, middlename, lastname, gender, maritalstatus, officialemail, employername, homeaddress, stateofresidence } = result;
+            if(title || firstname || middlename || lastname || gender || maritalstatus || officialemail || employername || homeaddress || stateofresidence == 'pending') {
+                res.status(401).json({
+                    message: 'Please fill up the required Personal and Employment details to continue with loan application'
+                })
+            }
+            //TODO: Confirm that the customer has the exact parameters
+            if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
+                return res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
+            if(loanTenure < MIN_TENURE || loanTenure > MAX_TENURE)
+                return res.status(400).json({ message: `Please select between ${MIN_TENURE} and ${MAX_TENURE} months.`});
+            
+            //TODO: Check if there are existing loans
+            return Loan.findOne({customerid: customerId})              
+        })
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        })
+    
+    
+    
+ 
+    
 
     //TODO: Save loan to DB - if earlier operation succeeds
 
