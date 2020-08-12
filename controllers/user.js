@@ -1,9 +1,11 @@
 require('dotenv').config();
 const User = require('../models/user');
+const bankCode = require('../utils/bankcodes');
 
 const { validationResult } = require('express-validator/check');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const bankcodes = require('../utils/bankcodes');
 
 exports.postSignUp = (req, res, next) => {
     const errors = validationResult(req);
@@ -95,6 +97,7 @@ exports.getUser = (req, res, next) => {
 exports.updateUser = (req, res, next) => {
     const customerId = req.customerId;
     const { title, firstname, middlename, lastname, gender, maritalstatus, officialemail, employername, homeaddress, stateofresidence } = req.body;
+    const { bankcode, accountnumber } = req.body;
     User.findOne({ customerid: customerId})
         .then(result => {
             if(!result){
@@ -112,12 +115,18 @@ exports.updateUser = (req, res, next) => {
             result.employername = employername;
             result.homeaddress = homeaddress;
             result.stateofresidence = stateofresidence;
+
+            //have to validate the bank account before saving it - but will save it for now
+            result.accountnumber = accountnumber;
+            result.bankcode = bankCode[bankcode].code;
+
             return result.save();
         })
         .then(result => {
             res.status(200).json({ message: 'User updated!', result });
         })
         .catch(err => {
+            console.log(err);
             if(!err.statusCode) {
                 err.statusCode = 500;
             }
