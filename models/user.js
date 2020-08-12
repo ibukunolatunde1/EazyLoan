@@ -97,12 +97,12 @@ const userSchema = new Schema(
             default: 'pending'
         },
         bankcode: {
-            type: Number,
+            type: String,
             required: true,
             default: 0
         },
         accountnumber: {
-            type: Number,
+            type: String,
             required: true,
             default: 0
         },
