@@ -40,7 +40,7 @@ const userSchema = new Schema(
             required: true
         },
         phonenumber: {
-            type: Number,
+            type: String,
             required: true,
             unique: true
         },
@@ -83,7 +83,7 @@ const userSchema = new Schema(
             required: true,
             default: 'pending'
         },
-        salary: Number,
+        salary: String,
         salaryPaymentDate: String,
         homeaddress: {
             type: String,
