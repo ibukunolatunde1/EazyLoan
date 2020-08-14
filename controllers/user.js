@@ -15,7 +15,8 @@ exports.postSignUp = (req, res, next) => {
         error.data = errors.array();
         throw error;
     }
-    const { email, phoneNumber, bvn, dob, password } = req.body;
+    const { email, phoneNumber, bvn, dob, password, confirmPassword } = req.body;
+    console.log(password, confirmPassword);
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
@@ -23,7 +24,7 @@ exports.postSignUp = (req, res, next) => {
                 email: email,
                 password: hashedPassword,
                 phonenumber: phoneNumber,
-                dob: new Date(dob),
+                dob: dob,
                 bvn: bvn,
             });
             return user.save();
@@ -40,6 +41,7 @@ exports.postSignUp = (req, res, next) => {
             })
         })
         .catch(err => {
+            console.log(err);
             if(!err.statusCode) {
                 err.statusCode = 500;
             }
@@ -73,6 +75,7 @@ exports.postSignIn = (req, res, next) => {
             })
         })
         .catch(err => {
+            console.log(err);
             if(!err.statusCode) {
                 err.statusCode = 500;
             }
@@ -81,12 +84,13 @@ exports.postSignIn = (req, res, next) => {
 }
 
 exports.getUser = (req, res, next) => {
-    const customerId = req.params.customerId;
+    const customerId = req.params.id;
     User.findOne({customerid: customerId})
         .then(result => {
             res.status(200).json(result);
         })
         .catch(err => {
+            console.log(err);
             if(!err.statusCode) {
                 err.statusCode = 500;
             }

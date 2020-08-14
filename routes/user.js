@@ -27,6 +27,7 @@ router.post(
             .isLength({ min: 6 })
             .withMessage('Password must be at least 6 characters'),
         // body('confirmPassword')
+        //     .trim()
         //     .custom((value, {req}) => {
         //         if(value !== req.body.password)
         //             throw new Error('Password confirmation is incorrect')

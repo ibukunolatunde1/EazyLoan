@@ -10,7 +10,15 @@ exports.getHomepage = (req, res, next) => {
 
 exports.getLoans = (req, res, next) => {
     Loan.find()
-        .then(loans => console.log(loans))
+        .then(loans => {
+            if(!loans){
+                res.status(404).json({ message: 'No loans found'});
+            }
+            res.status(200).json({
+                message: 'Found these loans',
+                data: loans
+            })
+        })
         .catch(err => {
             const error = new Error(err);
             error.httpStatusCode = 500;
@@ -20,8 +28,16 @@ exports.getLoans = (req, res, next) => {
 
 exports.getLoan = (req, res, next) => {
     const loanId = req.params.loanId;
-    Loan.findById(loanId)
-        .then(loan => console.log(loan))
+    Loan.findOne({ loanid: loanId })
+        .then(loan => {
+            if(!loan){
+                res.status(404).json({ message: 'No loans found'});
+            }
+            res.status(200).json({
+                message: 'Found these loans',
+                data: loan
+            })
+        })
         .catch(err => {
             const error = new Error(err);
             error.httpStatusCode = 500;
@@ -37,44 +53,47 @@ exports.postCreateLoanApplication = (req, res, next) => {
     const MIN_TENURE = 1;
     const MAX_TENURE = 18;
 
-    //TODO: Confirm that the customer has all his personal details set up
-    User.findOne({ customerid: customerId})
-        .then(result => {
-            if(!result) {
-                const error = new Error('Cannot find user');
-                error.httpStatusCode = 404;
-                throw error;
-            }
-            const { title, firstname, middlename, lastname, gender, maritalstatus, officialemail, employername, homeaddress, stateofresidence } = result;
-            if(title || firstname || middlename || lastname || gender || maritalstatus || officialemail || employername || homeaddress || stateofresidence == 'pending') {
-                res.status(401).json({
-                    message: 'Please fill up the required Personal and Employment details to continue with loan application'
+    //Verify that the customer has put in the correct values
+    if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
+        res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
+    else if(loanTenure < MIN_TENURE || loanTenure > MAX_TENURE)
+        res.status(400).json({ message: `Please select between ${MIN_TENURE} and ${MAX_TENURE} months.`});
+    else {
+        //Check that the customer has all details filled up before continuing
+        User.findOne({ customerid: customerId })
+            .then(result => {
+                const { title, firstname, middlename, lastname, gender, maritalstatus, officialemail, employername, homeaddress, stateofresidence } = result;
+                if(title && firstname && middlename && lastname && gender && maritalstatus && officialemail && employername && homeaddress && stateofresidence == 'pending') {
+                    res.status(422).json({
+                        message: 'Please fill up the required Personal and Employment details to continue with loan application'
+                    })  
+                } else return Loan.findOne({ customerid: customerId})
+            })
+            .then(result => {
+                if(!result) {
+                    const loan = new Loan({
+                        customerid: customerId,
+                        loanamount: loanAmount,
+                        loantenure: loanTenure,
+                        loanrequestdate: Date.now(),
+                        isActive: false,
+                        isApproved: 'pending',
+                        isAcceptedOffer: 'pending'
+                    });
+                    return loan.save();
+                } else res.status(400).json({ message: 'You have a loan already' });
+            })
+            .then(result => {
+                res.status(200).json({
+                    message: 'Your request has been added, we will get in touch shortly',
+                    result
                 })
-            }
-            //TODO: Confirm that the customer has the exact parameters
-            if(loanAmount < MIN_AMOUNT || loanAmount > MAX_AMOUNT)
-                return res.status(400).json({ message: `Only loans between ${MIN_AMOUNT} and ${MAX_AMOUNT} can be requested.`});
-            if(loanTenure < MIN_TENURE || loanTenure > MAX_TENURE)
-                return res.status(400).json({ message: `Please select between ${MIN_TENURE} and ${MAX_TENURE} months.`});
-            
-            //TODO: Check if there are existing loans
-            return Loan.findOne({customerid: customerId})              
-        })
-        .then(result => {
-            res.json(result);
-        })
-        .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error);
-        })
-    
-    
-    
- 
-    
-
-    //TODO: Save loan to DB - if earlier operation succeeds
-
-    //TODO: Inform the customer that you are processing his request and will get back in an hour
+            })
+            .catch(err => {
+                const error = new Error(err);
+                error.httpStatusCode = 500;
+                // return next(error);
+            })
+    }
+        
 }

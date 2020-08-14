@@ -1,6 +1,10 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
+const autoIncrement = require('mongoose-auto-increment');
 
 const Schema = mongoose.Schema;
+const connection = mongoose.createConnection(process.env.DB_URL);
+autoIncrement.initialize(connection);
 
 const loanSchema = new Schema(
     {
@@ -10,48 +14,39 @@ const loanSchema = new Schema(
             required: true
         },
         loanamount: {
-            type: Number,
-            required: true
-        },
-        loantenure: {
-            type: Number,
-            required: true
-        },
-        lastrepaymentamount: {
             type: String,
             required: true
         },
+        loantenure: {
+            type: String
+        },
+        lastrepaymentamount: {
+            type: String
+        },
         repaymentamount: {
-            type: Number,
-            required: true
+            type: String
         },
         totalrepaymentamount: {
-            type: Number,
-            required: true
+            type: String
         },
         outstandingamount: {
-            type: Number,
-            required: true
+            type: String
         },
         collectionstartdate: {
-            type: Date,
-            required: true
+            type: Date
         },
         loanrequestdate: {
             type: Date,
             required: true
         },
         lastrepaymentdate: {
-            type: Date,
-            required: true
+            type: Date
         },
         loanstopdate: {
-            type: Date,
-            required: true
+            type: Date
         },
         lastrepaymentstatus: {
-            type: String,
-            required: true
+            type: String
         },
         isActive: {
             type: Boolean,
@@ -69,4 +64,10 @@ const loanSchema = new Schema(
     { timestamps: true }
 );
 
+loanSchema.plugin(autoIncrement.plugin, {
+    model: 'Loan',
+    field: 'seqid',
+    startAt: 1,
+    incrementBy: 1
+});
 module.exports = mongoose.model('Loan', loanSchema);
