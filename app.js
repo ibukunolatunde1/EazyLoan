@@ -3,7 +3,6 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const csrf = require('csurf');
 
 const loanRoute = require('./routes/loans');
 const adminRoute = require('./routes/admin');
@@ -11,7 +10,6 @@ const userRoute = require('./routes/user');
 const errorController = require('./controllers/error');
 
 const app = express();
-const csrfProtecion =  csrf();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
