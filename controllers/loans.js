@@ -107,9 +107,13 @@ exports.postSetApproval = (req, res, next) => {
         .then(result => {
             //run some salary check and credit score on the CX
             approved = true;
+            const interestRate = 0.075;
             //if passed - inform the customer that we want to give him a loan
             if(approved) {
                 result.isApproved = 'approved';
+                result.interestpermonth = parseFloat(result.loanamount) * interestRate * (parseInt(result.loantenure) / 12.00 );
+                result.repaymentamount = parseFloat(result.loanamount) + parseFloat(result.interestpermonth);
+                result.totalrepaymentamount = parseFloat(result.repaymentamount) * parseFloat(result.loantenure);
                 return result.save();
             } else {
                 //if failed, also inform the customer accordingly
@@ -122,6 +126,7 @@ exports.postSetApproval = (req, res, next) => {
             approved ? res.status(200).json({ message: 'Your loan has been approved', result}) : res.status(200).json({ message: 'Your loan cannot be approved at this time', result }) 
         })
         .catch(err => {
+            console.log(err);
             const error = new Error(err);
             error.httpStatusCode = 500;
         })

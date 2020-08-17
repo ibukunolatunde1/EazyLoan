@@ -15,6 +15,9 @@ const loanSchema = new Schema(
             type: String,
             required: true
         },
+        interestpermonth: {
+            type: String
+        },
         loantenure: {
             type: String
         },
