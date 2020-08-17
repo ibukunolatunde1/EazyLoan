@@ -24,9 +24,9 @@ router.post(
     ],
     loansController.postCreateLoanApplication
 );
-// router.post(
-//     '/approve/:id/loan/:loanid',
-//     isAuth,
-//     loansController.postSetApproval
-// );
+router.post(
+    '/approve/:loanid',
+    isAuth,
+    loansController.postSetApproval
+);
 module.exports = router;

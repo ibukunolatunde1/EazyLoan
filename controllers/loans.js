@@ -97,3 +97,32 @@ exports.postCreateLoanApplication = (req, res, next) => {
     }
         
 }
+
+exports.postSetApproval = (req, res, next) => {
+    //This is an admin route - need to validate an admin only to use the route
+    //Retrieve the loan
+    const loan = req.params.loanid;
+    let approved;
+    Loan.findOne({ _id: loan})
+        .then(result => {
+            //run some salary check and credit score on the CX
+            approved = true;
+            //if passed - inform the customer that we want to give him a loan
+            if(approved) {
+                result.isApproved = 'approved';
+                return result.save();
+            } else {
+                //if failed, also inform the customer accordingly
+                result.isApproved = 'declined';
+                return result.save();
+            }
+            
+        })
+        .then(result => {
+            approved ? res.status(200).json({ message: 'Your loan has been approved', result}) : res.status(200).json({ message: 'Your loan cannot be approved at this time', result }) 
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+        })
+}
