@@ -1,10 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const autoIncrement = require('mongoose-auto-increment');
 
 const Schema = mongoose.Schema;
-const connection = mongoose.createConnection(process.env.DB_URL);
-autoIncrement.initialize(connection);
+
 
 const loanSchema = new Schema(
     {
@@ -64,10 +62,4 @@ const loanSchema = new Schema(
     { timestamps: true }
 );
 
-loanSchema.plugin(autoIncrement.plugin, {
-    model: 'Loan',
-    field: 'seqid',
-    startAt: 1,
-    incrementBy: 1
-});
 module.exports = mongoose.model('Loan', loanSchema);

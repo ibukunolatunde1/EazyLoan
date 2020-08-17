@@ -25,7 +25,7 @@ router.post(
     loansController.postCreateLoanApplication
 );
 router.post(
-    '/approve/:id/loan/:loanid',
+    '/approve/:loanid',
     isAuth,
     loansController.postSetApproval
 );

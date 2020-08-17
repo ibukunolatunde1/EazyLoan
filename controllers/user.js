@@ -68,7 +68,7 @@ exports.postSignIn = (req, res, next) => {
                 error.statusCode = 401;
                 throw error;
             }
-            const token = jwt.sign({ email: currentUser.email, customerId: currentUser.customerid }, process.env.SECRET, { expiresIn: '1h' });
+            const token = jwt.sign({ email: currentUser.email, customerId: currentUser.customerid, id: currentUser._id }, process.env.SECRET, { expiresIn: '1h' });
             res.status(200).json({
                 token,
                 customerId: currentUser.customerid
