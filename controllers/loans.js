@@ -131,3 +131,30 @@ exports.postSetApproval = (req, res, next) => {
             error.httpStatusCode = 500;
         })
 }
+
+exports.postSetAcceptance = (req, res, next) => {
+    const response = req.body;
+    //We should verify that the customer is the one with the loan
+    //If accepted
+    Loan.findOne({ _id: req.params.loanid })
+        .then(result => {
+            //If accepted
+            if(response === 'accepted') {
+                result.isAcceptedOffer = response;
+                result.collectionstartdate = new Date();
+                result.isActive = true;
+                return result.save();
+            } else {
+                res.status(200).status({ message: 'You have declined the loan offer, we will archive your request'});
+            }
+        })
+        .then(result => {
+            res.status(200).json({ message: 'Loan has been disbursed', result})
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            next(error);
+        })
+    //Else inform the customer that we will proceed to cancel the loan
+}
